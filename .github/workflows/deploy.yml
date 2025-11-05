@@ -1,0 +1,21 @@
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches: [ main ]  # 기본 브랜치명에 맞게 변경
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Wrangler 액션이 Node 설치/로그인까지 알아서 처리합니다.
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          # NEIS 키를 워커 시크릿으로 자동 바인딩
+          secrets: |
+            NEIS_KEY=${{ secrets.NEIS_KEY }}
+          command: deploy
